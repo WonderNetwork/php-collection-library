@@ -3,9 +3,9 @@
 namespace DusanKasan\Knapsack\Tests\Scenarios;
 
 use DusanKasan\Knapsack\Collection;
-use PHPUnit_Framework_TestCase;
+use PHPUnit\Framework\TestCase;
 
-class MultipleOperationsTest extends PHPUnit_Framework_TestCase
+class MultipleOperationsTest extends TestCase
 {
     /**
      * Example of a longer pipeline. If this was real code, you should probably split it into smaller chunks.
@@ -29,7 +29,7 @@ class MultipleOperationsTest extends PHPUnit_Framework_TestCase
             })
             ->flatten()
             ->sort(function ($a, $b) {
-                return $a > $b;
+                return $a - $b;
             })
             ->slice(2, 5)
             ->groupBy(function ($v) {

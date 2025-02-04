@@ -3,13 +3,13 @@
 namespace DusanKasan\Knapsack\Tests\Scenarios;
 
 use DusanKasan\Knapsack\Collection;
-use PHPUnit_Framework_TestCase;
+use PHPUnit\Framework\TestCase;
 
 /**
  * More advanced usage of collection pipeline, see
  * http://martinfowler.com/articles/refactoring-pipelines.html#GroupingFlightRecords for reference.
  */
-class GroupingFlightsTest extends PHPUnit_Framework_TestCase
+class GroupingFlightsTest extends TestCase
 {
     private $inputData = [
         [

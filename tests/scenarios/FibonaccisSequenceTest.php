@@ -3,9 +3,9 @@
 namespace DusanKasan\Knapsack\Tests\Scenarios;
 
 use DusanKasan\Knapsack\Collection;
-use PHPUnit_Framework_TestCase;
+use PHPUnit\Framework\TestCase;
 
-class FibonaccisSequenceTest extends PHPUnit_Framework_TestCase
+class FibonaccisSequenceTest extends TestCase
 {
     /**
      * Example generating first 5 values in fibonacci's sequence.

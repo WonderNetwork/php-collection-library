@@ -1,29 +1,38 @@
 {
-  "name": "martinvenus/knapsack",
+  "name": "wondernetwork/php-collection-library",
   "license": "MIT",
   "type": "library",
   "description": "Collection library for PHP",
   "keywords": ["collections","sequences", "map", "reduce"],
-  "homepage": "https://github.com/DusanKasan/Knapsack",
+  "homepage": "https://github.com/WonderNetwork/php-collection-library",
   "authors": [
     {
       "name": "Dusan Kasan",
       "email": "dusan@kasan.sk",
       "homepage": "http://kasan.sk",
       "role": "Developer"
+    },
+    {
+      "name": "Martin Venuš",
+      "homepage": "https://github.com/martinvenus"
+    },
+    {
+      "name": "Maciej Łebkowski",
+      "homepage": "https://github.com/mlebkowski"
     }
   ],
   "require-dev": {
-    "phpspec/phpspec": "^3.4",
-    "henrikbjorn/phpspec-code-coverage": "^3.0",
+    "ext-dom": "*",
     "squizlabs/php_codesniffer": "^3.4",
     "phpmd/phpmd" : "^2.0",
-    "ciaranmcnulty/phpspec-typehintedmethods": "^2.0",
-    "phpunit/phpunit": "^5.7",
-    "symfony/console": "^2.7"
+    "phpspec/phpspec": "^7",
+    "phpunit/phpunit": "^10.5"
   },
   "require": {
-    "php": ">=5.6.0"
+    "php": ">=8.3"
+  },
+  "replace": {
+    "dusank/knapsack": "self.version"
   },
   "autoload": {
     "files": [

@@ -336,7 +336,7 @@ class CollectionSpec extends ObjectBehavior
 
     function it_can_execute_callback_for_each_item(DOMXPath $a)
     {
-        $a->query('asd')->shouldBeCalled();
+        $a->query('asd')->shouldBeCalled()->willReturn(false);
         $this->beConstructedWith([$a]);
 
         $this
