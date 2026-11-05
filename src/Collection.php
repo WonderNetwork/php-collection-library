@@ -124,9 +124,7 @@ class Collection implements IteratorAggregate, \Serializable, CollectionInterfac
             toArray(
                 map(
                     $this->input,
-                    function ($value, $key) {
-                        return [$key, $value];
-                    }
+                    fn($value, $key) => [$key, $value]
                 )
             )
         );
@@ -137,9 +135,7 @@ class Collection implements IteratorAggregate, \Serializable, CollectionInterfac
         return toArray(
             map(
                 $this->input,
-                function ($value, $key) {
-                    return [$key, $value];
-                }
+                fn($value, $key) => [$key, $value]
             )
         );
     }

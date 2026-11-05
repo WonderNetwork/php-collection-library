@@ -12,9 +12,7 @@ class FibonaccisSequenceTest extends TestCase
      */
     public function testIt()
     {
-        $result = Collection::iterate([1, 1], function ($v) {
-            return [$v[1], $v[0] + $v[1]];
-        })
+        $result = Collection::iterate([1, 1], fn($v) => [$v[1], $v[0] + $v[1]])
             ->map('\DusanKasan\Knapsack\first')
             ->take(5)
             ->values()

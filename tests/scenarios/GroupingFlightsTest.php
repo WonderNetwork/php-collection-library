@@ -37,11 +37,9 @@ class GroupingFlightsTest extends TestCase
         $collection = new Collection($this->inputData);
 
         $result = $collection
-            ->groupBy(function ($v) {
-                return $v['dest'];
-            })
-            ->map([$this, 'summarize'])
-            ->map([$this, 'buildResults'])
+            ->groupBy(fn($v) => $v['dest'])
+            ->map($this->summarize(...))
+            ->map($this->buildResults(...))
             ->toArray();
 
         $expected = [
@@ -57,19 +55,13 @@ class GroupingFlightsTest extends TestCase
     public function summarize(Collection $flights)
     {
         $numCancellations = $flights
-            ->filter(function ($f) {
-                return $f['cancelled'];
-            })
+            ->filter(fn($f) => $f['cancelled'])
             ->size();
 
         $totalDelay = $flights
-            ->reject(function ($f) {
-                return $f['cancelled'];
-            })
+            ->reject(fn($f) => $f['cancelled'])
             ->reduce(
-                function ($tmp, $f) {
-                    return $tmp + $f['delay'];
-                },
+                fn($tmp, $f) => $tmp + $f['delay'],
                 0
             );
 
