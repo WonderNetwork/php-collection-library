@@ -35,9 +35,7 @@ class CustomPassthroughFunctionTest extends TestCase
         //Must take and return a Collection
         $transpose = function (Collection $collections) {
             $transposed = array_map(
-                function (...$items) {
-                    return $items;
-                },
+                fn(...$items) => $items,
                 ...$collections->values()->toArray()
             );
 

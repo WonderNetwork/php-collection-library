@@ -25,7 +25,7 @@
     "ext-dom": "*",
     "squizlabs/php_codesniffer": "^3.4",
     "phpmd/phpmd" : "^2.0",
-    "phpspec/phpspec": "^8.3",
+    "phpspec/phpspec": "^9@rc",
     "phpunit/phpunit": "^12"
   },
   "require": {

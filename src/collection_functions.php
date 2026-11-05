@@ -75,13 +75,9 @@ function reverse($collection)
         return map(
             indexBy(
                 array_reverse($array),
-                function ($item) {
-                    return $item[0];
-                }
+                fn($item) => $item[0]
             ),
-            function ($item) {
-                return $item[1];
-            }
+            fn($item) => $item[1]
         );
     };
 
@@ -194,7 +190,7 @@ function isNotEmpty($collection)
  */
 function frequencies($collection)
 {
-    return countBy($collection, '\DusanKasan\Knapsack\identity');
+    return countBy($collection, \DusanKasan\Knapsack\identity(...));
 }
 
 /**
@@ -245,13 +241,9 @@ function map($collection, callable $function)
  * @param callable|null $function ($value, $key)
  * @return Collection
  */
-function filter($collection, callable $function = null)
+function filter($collection, callable|null $function = null)
 {
-    if (null === $function) {
-        $function = function ($value) {
-            return (bool) $value;
-        };
-    }
+    $function ??= fn($value) => (bool) $value;
 
     $generatorFactory = function () use ($collection, $function) {
         foreach ($collection as $key => $value) {
@@ -319,7 +311,7 @@ function flatten($collection, $levelsToFlatten = -1)
         $childLevelsToFlatten = $levelsToFlatten > 0 ? $levelsToFlatten - 1 : $levelsToFlatten;
 
         foreach ($collection as $key => $value) {
-            if ($flattenNextLevel && (is_array($value) || $value instanceof Traversable)) {
+            if ($flattenNextLevel && (is_iterable($value))) {
                 foreach (flatten($value, $childLevelsToFlatten) as $childKey => $childValue) {
                     yield $childKey => $childValue;
                 }
@@ -346,18 +338,14 @@ function sort($collection, callable $function)
         values(
             map(
                 $collection,
-                function ($value, $key) {
-                    return [$key, $value];
-                }
+                fn($value, $key) => [$key, $value]
             )
         )
     );
 
     uasort(
         $array,
-        function ($a, $b) use ($function) {
-            return $function($a[1], $b[1], $a[0], $b[0]);
-        }
+        fn($a, $b) => $function($a[1], $b[1], $a[0], $b[0])
     );
 
     return dereferenceKeyValue($array);
@@ -409,9 +397,7 @@ function groupBy($collection, callable $function)
     }
 
     return Collection::from($result)
-        ->map(function ($entry) {
-            return new Collection($entry);
-        });
+        ->map(fn($entry) => new Collection($entry));
 }
 
 /**
@@ -424,20 +410,13 @@ function groupBy($collection, callable $function)
  */
 function groupByKey($collection, $key)
 {
-    $generatorFactory = function () use ($collection, $key) {
-
-        return groupBy(
-            filter(
-                $collection,
-                function ($item) use ($key) {
-                    return isCollection($item) && has($item, $key);
-                }
-            ),
-            function ($value) use ($key) {
-                return get($value, $key);
-            }
-        );
-    };
+    $generatorFactory = fn() => groupBy(
+        filter(
+            $collection,
+            fn($item) => isCollection($item) && has($item, $key)
+        ),
+        fn($value) => get($value, $key)
+    );
 
     return new Collection($generatorFactory);
 }
@@ -491,7 +470,7 @@ function getOrDefault($collection, $key, $default)
 {
     try {
         return get($collection, $key);
-    } catch (ItemNotFound $e) {
+    } catch (ItemNotFound) {
         return $default;
     }
 }
@@ -547,7 +526,7 @@ function countBy($collection, callable $function)
 {
     return map(
         groupBy($collection, $function),
-        '\DusanKasan\Knapsack\size'
+        \DusanKasan\Knapsack\size(...)
     );
 }
 
@@ -663,7 +642,7 @@ function iterate($value, callable $function)
             try {
                 $value = $function($value);
                 yield $value;
-            } catch (NoMoreItems $e) {
+            } catch (NoMoreItems) {
                 break;
             }
         }
@@ -683,9 +662,7 @@ function reject($collection, callable $function)
 {
     return filter(
         $collection,
-        function ($value, $key) use ($function) {
-            return !$function($value, $key);
-        }
+        fn($value, $key) => !$function($value, $key)
     );
 }
 
@@ -1095,20 +1072,18 @@ function repeat($value, $times = -1)
  */
 function range($start = 0, $end = null, $step = 1)
 {
-    $generatorFactory = function () use ($start, $end, $step) {
-        return iterate(
-            $start,
-            function ($value) use ($step, $end) {
-                $result = $value + $step;
+    $generatorFactory = fn() => iterate(
+        $start,
+        function ($value) use ($step, $end) {
+            $result = $value + $step;
 
-                if ($end !== null && $result > $end) {
-                    throw new NoMoreItems;
-                }
-
-                return $result;
+            if ($end !== null && $result > $end) {
+                throw new NoMoreItems;
             }
-        );
-    };
+
+            return $result;
+        }
+    );
 
     return new Collection($generatorFactory);
 }
@@ -1121,7 +1096,7 @@ function range($start = 0, $end = null, $step = 1)
  */
 function isCollection($input)
 {
-    return is_array($input) || $input instanceof Traversable;
+    return is_iterable($input);
 }
 
 /**
@@ -1137,9 +1112,7 @@ function duplicate($input)
         return toArray(
             map(
                 $input,
-                function ($i) {
-                    return duplicate($i);
-                }
+                fn($i) => duplicate($i)
             )
         );
     } elseif (is_object($input)) {
@@ -1178,9 +1151,7 @@ function realize($collection)
         toArray(
             map(
                 $collection,
-                function ($value, $key) {
-                    return [$key, $value];
-                }
+                fn($value, $key) => [$key, $value]
             )
         )
     );
@@ -1238,9 +1209,7 @@ function except($collection, $keys)
 
     return reject(
         $collection,
-        function ($value, $key) use ($keys) {
-            return in_array($key, $keys);
-        }
+        fn($value, $key) => in_array($key, $keys)
     );
 }
 
@@ -1257,9 +1226,7 @@ function only($collection, $keys)
 
     return filter(
         $collection,
-        function ($value, $key) use ($keys) {
-            return in_array($key, $keys, true);
-        }
+        fn($value, $key) => in_array($key, $keys, true)
     );
 }
 
@@ -1336,7 +1303,7 @@ function has($collection, $key)
     try {
         get($collection, $key);
         return true;
-    } catch (ItemNotFound $e) {
+    } catch (ItemNotFound) {
         return false;
     }
 }
@@ -1395,21 +1362,17 @@ function zip(...$collections)
  */
 function transpose($collection)
 {
-    if (some($collection, function ($value) {
-        return !($value instanceof Collection);
-    })) {
+    if (some($collection, fn($value) => !($value instanceof Collection))) {
         throw new InvalidArgument('Can only transpose collections of collections.');
     }
 
     return Collection::from(
         array_map(
-            function (...$items) {
-                return new Collection($items);
-            },
+            fn(...$items) => new Collection($items),
             ...toArray(
                 map(
                     $collection,
-                    'DusanKasan\Knapsack\toArray'
+                    \DusanKasan\Knapsack\toArray(...)
                 )
             )
         )
@@ -1431,7 +1394,7 @@ function extract($collection, $keyPath)
 
     $extractor = function ($coll) use ($pathParts) {
         foreach ($pathParts as $pathPart) {
-            $coll = flatten(filter($coll, '\DusanKasan\Knapsack\isCollection'), 1);
+            $coll = flatten(filter($coll, \DusanKasan\Knapsack\isCollection(...)), 1);
 
             if ($pathPart != '*') {
                 $pathPart = str_replace(['\.', '\*'], ['.', '*'], $pathPart);
@@ -1692,7 +1655,7 @@ function dump($input, $maxItemsPerCollection = null, $maxDepth = null)
         return $input;
     }
 
-    if (is_array($input) || $input instanceof Traversable) {
+    if (is_iterable($input)) {
         if ($maxDepth === 0) {
             return '^^^';
         }
@@ -1729,10 +1692,9 @@ function dump($input, $maxItemsPerCollection = null, $maxDepth = null)
         $reflection = new \ReflectionObject($input);
         $normalizedProperties = [];
         foreach ($reflection->getProperties() as $property) {
-            $property->setAccessible(true);
             $normalizedProperties[$property->getName()] = $property->getValue($input);
         }
-        return [get_class($input) => dump($normalizedProperties, null, $maxDepth>0 ? $maxDepth-1 : null)];
+        return [$input::class => dump($normalizedProperties, null, $maxDepth>0 ? $maxDepth-1 : null)];
     }
 
     return gettype($input);

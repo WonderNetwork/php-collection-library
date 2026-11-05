@@ -16,25 +16,15 @@ class MultipleOperationsTest extends TestCase
         $collection = new Collection($array);
 
         $result = $collection
-            ->reject(function ($v) {
-                return $v > 2;
-            })
-            ->filter(function ($k) {
-                return $k > 5;
-            })
+            ->reject(fn($v) => $v > 2)
+            ->filter(fn($k) => $k > 5)
             ->distinct()
             ->concat([1, 2])
-            ->map(function ($i) {
-                return [$i, $i + 1];
-            })
+            ->map(fn($i) => [$i, $i + 1])
             ->flatten()
-            ->sort(function ($a, $b) {
-                return $a - $b;
-            })
+            ->sort(fn($a, $b) => $a - $b)
             ->slice(2, 5)
-            ->groupBy(function ($v) {
-                return $v % 2 == 0 ? 'even' : 'odd';
-            })
+            ->groupBy(fn($v) => $v % 2 == 0 ? 'even' : 'odd')
             ->get('even')
             ->toArray();
 
